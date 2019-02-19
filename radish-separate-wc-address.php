@@ -203,7 +203,7 @@ class Radish_Checkout_Fields {
 		
 		foreach ( $forms as $form ) {
 			$checkout_fields[ $form ][ $form . '_country' ]['priority']      = 28;
-			$checkout_fields[ $form ][ $form . '_address_1' ]['placeholder'] = __( "Street address", 'woocommerce' );
+			$checkout_fields[ $form ][ $form . '_address_1' ]['placeholder'] = __( 'Street address', 'woocommerce' );
 		}
 		
 		return $checkout_fields;
