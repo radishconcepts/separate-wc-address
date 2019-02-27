@@ -58,16 +58,7 @@ class Radish_Checkout_Fields {
 		
 		add_filter( 'woocommerce_default_address_fields', array( $this, 'checkout_change_address_1_placeholder' ), 20 );
 		
-		add_filter( 'wpo_wcnlpc_postcode_field_countries', function ( $country_codes ) {
-			$countries = new \WC_Countries();
-			$countries = $countries->__get( 'countries' );
-			
-			foreach ( $countries as $code => $country ) {
-				$country_codes[] = $code;
-			}
-			
-			return $country_codes;
-		} );
+		add_filter( 'wpo_wcnlpc_postcode_field_countries', array( $this, 'checkout_get_wc_countries' ) );
 	}
 	
 	public function alter_billing_checkout_fields( $fields ) {
@@ -213,6 +204,17 @@ class Radish_Checkout_Fields {
 		$fields['address_1']['placeholder'] = __( 'Street' );
 		
 		return $fields;
+	}
+	
+	public function checkout_get_wc_countries($country_codes) {
+		$countries = new \WC_Countries();
+		$countries = $countries->__get( 'countries' );
+		
+		foreach ( $countries as $code => $country ) {
+			$country_codes[] = $code;
+		}
+		
+		return $country_codes;
 	}
 	
 }
