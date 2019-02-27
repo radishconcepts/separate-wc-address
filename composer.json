@@ -1,0 +1,12 @@
+{
+    "name": "radishconcepts/separate-wc-address",
+    "description": "Separates the address field in Woocommerce checkout to addrss, number and suffix",
+    "type": "wordpress-plugin",
+    "authors": [
+        {
+            "name": "Marinus Klasen",
+            "email": "marinus@mklasen.nl"
+        }
+    ],
+    "require": {}
+}
