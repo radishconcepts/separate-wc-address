@@ -1,11 +1,18 @@
 <?php
 /**
+ * Class Checkout Fields
+ *
+ * @package    Radish_Checkout_Fields
+ */
+
+/**
  * Radish Checkout Fields
  *
  * Class for altering and repositioning the checkout fields.
  *
  * @category   Components
  * @package    Radish_Checkout_Fields
+ * @subpackage Checkout_Fields
  * @author     Radish Concepts <info@radishconcepts.com>
  * @license    https://www.gnu.org/licenses/gpl-3.0.txt GNU/GPLv3
  * @link       https://radishconcepts.com
@@ -129,7 +136,7 @@ class Checkout_Fields {
 	 * @since 1.0
 	 */
 	public function process_fields( $order_id ) {
-
+		// @codingStandardsIgnoreStart
 		// TODO Verify nonce.
 		error_log( wp_json_encode( $_POST ) );
 
@@ -191,6 +198,7 @@ class Checkout_Fields {
 				update_post_meta( $order_id, '_' . $form . '_address_1', sanitize_text_field( $street_name . ' ' . $house_number . ' ' . $house_number_suffix ) );
 			}
 		}
+		// @codingStandardsIgnoreEnd
 
 	}
 

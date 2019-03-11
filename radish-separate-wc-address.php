@@ -39,4 +39,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+/**
+ * Require all files with composer.
+ */
 require BASE_PATH . 'vendor/autoload.php';
