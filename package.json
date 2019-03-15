@@ -1,0 +1,22 @@
+{
+  "name": "radish-separate-wc-address",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Gulpfile.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/radishconcepts/separate-wc-address.git"
+  },
+  "author": "Radish Concepts <info@radishconcepts.com>",
+  "license": "GPL v3",
+  "bugs": {
+    "url": "https://github.com/radishconcepts/separate-wc-address/issues"
+  },
+  "homepage": "https://github.com/radishconcepts/separate-wc-address#readme",
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-fs": "0.0.2"
+  }
+}
