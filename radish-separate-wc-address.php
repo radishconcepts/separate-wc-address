@@ -42,4 +42,6 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Require all files with composer.
  */
-require BASE_PATH . 'vendor/autoload.php';
+require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
+new Radish_Checkout_Fields\Checkout_Fields();

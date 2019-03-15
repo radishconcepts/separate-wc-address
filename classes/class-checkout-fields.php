@@ -5,6 +5,8 @@
  * @package    Radish_Checkout_Fields
  */
 
+namespace Radish_Checkout_Fields;
+
 /**
  * Radish Checkout Fields
  *

@@ -14,8 +14,8 @@
     ],
     "require": {},
     "autoload": {
-        "autoload"    : {
-            "classmap": ["classes/"]
-        }
+        "classmap": [
+            "classes/"
+        ]
     }
 }
