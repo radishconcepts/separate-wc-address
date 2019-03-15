@@ -187,21 +187,14 @@ class Checkout_Fields {
 		// Loop over again, now with new data.
 		foreach ( $address_data as $form => $data ) {
 
-			$street_name         = $data['street_name'];
-			$house_number        = $data['house_number'];
-			$house_number_suffix = $data['house_number_suffix'];
-
-			// Shipping fields are not always available.
-			if ( 'shipping' === $form ) {
-				if ( empty( $street_name ) ) {
-					$street_name = $address_data['billing']['street_name'];
-				}
-				if ( empty( $house_number ) ) {
-					$house_number = $address_data['billing']['house_number'];
-				}
-				if ( empty( $house_number_suffix ) ) {
-					$house_number_suffix = $address_data['billing']['house_number_suffix'];
-				}
+			if ( $form === 'shipping' && ! isset( $_POST['ship_to_different_address'] ) ) { // phpcs:ignore
+				$street_name         = $address_data['billing']['street_name'];
+				$house_number        = $address_data['billing']['house_number'];
+				$house_number_suffix = $address_data['billing']['house_number_suffix'];
+			} else {
+				$street_name         = $data['street_name'];
+				$house_number        = $data['house_number'];
+				$house_number_suffix = $data['house_number_suffix'];
 			}
 
 			// Update individual fields.
