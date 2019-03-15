@@ -156,66 +156,61 @@ class Checkout_Fields {
 	 */
 	public function process_fields( $order_id ) {
 
-		$nonce = sanitize_key( $_POST['woocommerce-process-checkout-nonce'] ); // @codingStandardsIgnoreLine.
+		// An array with default data.
+		$address_data = [
+			'billing'  => [
+				'street_name'         => '',
+				'house_number'        => '',
+				'house_number_suffix' => '',
+			],
+			'shipping' => [
+				'street_name'         => '',
+				'house_number'        => '',
+				'house_number_suffix' => '',
+			],
+		];
 
-		if ( wp_verify_nonce( $nonce, 'woocommerce-process-checkout-nonce' ) ) {
+		// Build an array of addressData.
+		foreach ( $address_data as $form => $data ) {
 
-			// An array with default data.
-			$address_data = [
-				'billing'  => [
-					'street_name'         => '',
-					'house_number'        => '',
-					'house_number_suffix' => '',
-				],
-				'shipping' => [
-					'street_name'         => '',
-					'house_number'        => '',
-					'house_number_suffix' => '',
-				],
-			];
+			if ( isset( $_POST[ $form . '_street_name' ] ) && ! empty( $_POST[ $form . '_street_name' ] ) ) { // phpcs:ignore
+				$address_data[ $form ]['street_name'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_street_name' ] ) ); // phpcs:ignore
+			}
+			if ( isset( $_POST[ $form . '_house_number' ] ) && ! empty( $_POST[ $form . '_house_number' ] ) ) { // phpcs:ignore
+				$address_data[ $form ]['house_number'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number' ] ) ); // phpcs:ignore
+			}
+			if ( isset( $_POST[ $form . '_house_number_suffix' ] ) && ! empty( $_POST[ $form . '_house_number_suffix' ] ) ) { // phpcs:ignore
+				$address_data[ $form ]['house_number_suffix'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number_suffix' ] ) ); // phpcs:ignore
+			}
+		}
 
-			// Build an array of addressData.
-			foreach ( $address_data as $form => $data ) {
+		// Loop over again, now with new data.
+		foreach ( $address_data as $form => $data ) {
 
-				if ( isset( $_POST[ $form . '_street_name' ] ) && ! empty( $_POST[ $form . '_street_name' ] ) ) {
-					$address_data[ $form ]['street_name'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_street_name' ] ) );
+			$street_name         = $data['street_name'];
+			$house_number        = $data['house_number'];
+			$house_number_suffix = $data['house_number_suffix'];
+
+			// Shipping fields are not always available.
+			if ( 'shipping' === $form ) {
+				if ( empty( $street_name ) ) {
+					$street_name = $address_data['billing']['street_name'];
 				}
-				if ( isset( $_POST[ $form . '_house_number' ] ) && ! empty( $_POST[ $form . '_house_number' ] ) ) {
-					$address_data[ $form ]['house_number'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number' ] ) );
+				if ( empty( $house_number ) ) {
+					$house_number = $address_data['billing']['house_number'];
 				}
-				if ( isset( $_POST[ $form . '_house_number_suffix' ] ) && ! empty( $_POST[ $form . '_house_number_suffix' ] ) ) {
-					$address_data[ $form ]['house_number_suffix'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number_suffix' ] ) );
+				if ( empty( $house_number_suffix ) ) {
+					$house_number_suffix = $address_data['billing']['house_number_suffix'];
 				}
 			}
 
-			// Loop over again, now with new data.
-			foreach ( $address_data as $form => $data ) {
+			// Update individual fields.
+			update_post_meta( $order_id, '_' . $form . '_street_name', $street_name );
+			update_post_meta( $order_id, '_' . $form . '_house_number', $house_number );
+			update_post_meta( $order_id, '_' . $form . '_house_number_suffix', $house_number_suffix );
 
-				$street_name         = $data['street_name'];
-				$house_number        = $data['house_number'];
-				$house_number_suffix = $data['house_number_suffix'];
-
-				// Shipping fields are not always available.
-				if ( 'shipping' === $form ) {
-					if ( empty( $street_name ) ) {
-						$street_name = $address_data['billing']['street_name'];
-					}
-					if ( empty( $house_number ) ) {
-						$house_number = $address_data['billing']['house_number'];
-					}
-					if ( empty( $house_number_suffix ) ) {
-						$house_number_suffix = $address_data['billing']['house_number_suffix'];
-					}
-				}
-
-				// Update individual fields.
-				update_post_meta( $order_id, '_' . $form . '_street_name', $street_name );
-				update_post_meta( $order_id, '_' . $form . '_house_number', $house_number );
-				update_post_meta( $order_id, '_' . $form . '_house_number_suffix', $house_number_suffix );
-
-				// Finally combine the data back into address_1.
-				update_post_meta( $order_id, '_' . $form . '_address_1', sanitize_text_field( $street_name . ' ' . $house_number . ' ' . $house_number_suffix ) );
-			}
+			// Finally combine the data back into address_1.
+			update_post_meta( $order_id, '_' . $form . '_address_1', sanitize_text_field( $street_name . ' ' . $house_number . ' ' . $house_number_suffix ) );
 		}
 
 	}
