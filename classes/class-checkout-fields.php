@@ -59,9 +59,13 @@ class Checkout_Fields {
 
 		add_filter( 'woocommerce_checkout_fields', [ $this, 'checkout_move_country_field' ], 20 );
 
-		add_filter( 'woocommerce_default_address_fields', [ $this, 'checkout_change_address_1_placeholder' ], 20 );
-
 		add_filter( 'wpo_wcnlpc_postcode_field_countries', [ $this, 'checkout_get_wc_countries' ] );
+
+		add_action( 'woocommerce_checkout_update_order_review', [ $this, 'update_order_review' ] );
+
+		add_filter( 'woocommerce_admin_billing_fields', [ $this, 'admin_address_fields' ] );
+
+		add_filter( 'woocommerce_admin_shipping_fields', [ $this, 'admin_address_fields' ] );
 	}
 
 	/**
@@ -106,6 +110,17 @@ class Checkout_Fields {
 
 		$extra_fields = [];
 
+		if ( ! isset( $fields[ $form . '_street_name' ] ) ) {
+			$extra_fields[ $form . '_street_name' ] = [
+				'label'        => __( 'Street name', 'radish-checkout-fields' ),
+				'required'     => true,
+				'priority'     => 60,
+				'class'        => [ 'form-row-quart-first' ],
+				'autocomplete' => 'street_address',
+				'default'      => ( ! empty( WC()->session->get( $form . '_street_name' ) ) ? WC()->session->get( $form . '_street_name' ) : '' ),
+			];
+		}
+
 		if ( ! isset( $fields[ $form . '_house_number' ] ) ) {
 			$extra_fields[ $form . '_house_number' ] = [
 				'label'        => __( 'Nr.', 'radish-checkout-fields' ),
@@ -113,6 +128,7 @@ class Checkout_Fields {
 				'priority'     => 61,
 				'class'        => [ 'form-row-quart-first' ],
 				'autocomplete' => 'number',
+				'default'      => ( ! empty( WC()->session->get( $form . '_house_number' ) ) ? WC()->session->get( $form . '_house_number' ) : '' ),
 			];
 		}
 		if ( ! isset( $fields[ $form . '_house_number_suffix' ] ) ) {
@@ -122,6 +138,7 @@ class Checkout_Fields {
 				'priority'     => 62,
 				'class'        => [ 'form-row-fifth' ],
 				'autocomplete' => 'suffix',
+				'default'      => ( ! empty( WC()->session->get( $form . '_house_number_suffix' ) ) ? WC()->session->get( $form . '_house_number_suffix' ) : '' ),
 			];
 		}
 
@@ -138,69 +155,68 @@ class Checkout_Fields {
 	 * @since 1.0
 	 */
 	public function process_fields( $order_id ) {
-		// @codingStandardsIgnoreStart
-		// TODO Verify nonce.
-		error_log( wp_json_encode( $_POST ) );
 
-		// An array with default data.
-		$address_data = [
-			'billing'  => [
-				'street_name'         => '',
-				'house_number'        => '',
-				'house_number_suffix' => '',
-			],
-			'shipping' => [
-				'street_name'         => '',
-				'house_number'        => '',
-				'house_number_suffix' => '',
-			],
-		];
+		$nonce = sanitize_key( $_POST['woocommerce-process-checkout-nonce'] ); // @codingStandardsIgnoreLine.
 
-		// Build an array of addressData.
-		foreach ( $address_data as $form => $data ) {
+		if ( wp_verify_nonce( $nonce, 'woocommerce-process-checkout-nonce' ) ) {
 
-			if ( isset( $_POST[ $form . '_address_1' ] ) && ! empty( $_POST[ $form . '_address_1' ] ) ) {
-				$address_data[ $form ]['street_name'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_address_1' ] ) );
-			}
-			if ( isset( $_POST[ $form . '_house_number' ] ) && ! empty( $_POST[ $form . '_house_number' ] ) ) {
-				$address_data[ $form ]['house_number'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number' ] ) );
-			}
-			if ( isset( $_POST[ $form . '_house_number_suffix' ] ) && ! empty( $_POST[ $form . '_house_number_suffix' ] ) ) {
-				$address_data[ $form ]['house_number_suffix'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number_suffix' ] ) );
-			}
-		}
+			// An array with default data.
+			$address_data = [
+				'billing'  => [
+					'street_name'         => '',
+					'house_number'        => '',
+					'house_number_suffix' => '',
+				],
+				'shipping' => [
+					'street_name'         => '',
+					'house_number'        => '',
+					'house_number_suffix' => '',
+				],
+			];
 
-		// Loop over again, now with new data.
-		foreach ( $address_data as $form => $data ) {
+			// Build an array of addressData.
+			foreach ( $address_data as $form => $data ) {
 
-			$street_name         = $data['street_name'];
-			$house_number        = $data['house_number'];
-			$house_number_suffix = $data['house_number_suffix'];
-
-			// Shipping fields are not always available.
-			if ( 'shipping' === $form ) {
-				if ( empty( $street_name ) ) {
-					$street_name = $address_data['billing']['street_name'];
+				if ( isset( $_POST[ $form . '_street_name' ] ) && ! empty( $_POST[ $form . '_street_name' ] ) ) {
+					$address_data[ $form ]['street_name'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_street_name' ] ) );
 				}
-				if ( empty( $house_number ) ) {
-					$house_number = $address_data['billing']['house_number'];
+				if ( isset( $_POST[ $form . '_house_number' ] ) && ! empty( $_POST[ $form . '_house_number' ] ) ) {
+					$address_data[ $form ]['house_number'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number' ] ) );
 				}
-				if ( empty( $house_number_suffix ) ) {
-					$house_number_suffix = $address_data['billing']['house_number_suffix'];
+				if ( isset( $_POST[ $form . '_house_number_suffix' ] ) && ! empty( $_POST[ $form . '_house_number_suffix' ] ) ) {
+					$address_data[ $form ]['house_number_suffix'] = sanitize_text_field( wp_unslash( $_POST[ $form . '_house_number_suffix' ] ) );
 				}
 			}
 
-			// Update individual fields.
-			update_post_meta( $order_id, '_' . $form . '_street_name', $street_name );
-			update_post_meta( $order_id, '_' . $form . '_house_number', $house_number );
-			update_post_meta( $order_id, '_' . $form . '_house_number_suffix', $house_number_suffix );
+			// Loop over again, now with new data.
+			foreach ( $address_data as $form => $data ) {
 
-			// Finally combine the data back into address_1.
-			if ( ! empty( $street_name ) && ! empty( $house_number ) ) {
+				$street_name         = $data['street_name'];
+				$house_number        = $data['house_number'];
+				$house_number_suffix = $data['house_number_suffix'];
+
+				// Shipping fields are not always available.
+				if ( 'shipping' === $form ) {
+					if ( empty( $street_name ) ) {
+						$street_name = $address_data['billing']['street_name'];
+					}
+					if ( empty( $house_number ) ) {
+						$house_number = $address_data['billing']['house_number'];
+					}
+					if ( empty( $house_number_suffix ) ) {
+						$house_number_suffix = $address_data['billing']['house_number_suffix'];
+					}
+				}
+
+				// Update individual fields.
+				update_post_meta( $order_id, '_' . $form . '_street_name', $street_name );
+				update_post_meta( $order_id, '_' . $form . '_house_number', $house_number );
+				update_post_meta( $order_id, '_' . $form . '_house_number_suffix', $house_number_suffix );
+
+				// Finally combine the data back into address_1.
 				update_post_meta( $order_id, '_' . $form . '_address_1', sanitize_text_field( $street_name . ' ' . $house_number . ' ' . $house_number_suffix ) );
 			}
 		}
-		// @codingStandardsIgnoreEnd
 
 	}
 
@@ -214,9 +230,9 @@ class Checkout_Fields {
 	 * @since 1.0
 	 */
 	public function show_on_admin_order( $order, $form ) {
-		$street = get_post_meta( $order->get_id(), '_' . $form . '_address_1', true );
+		$street = get_post_meta( $order->get_id(), '_' . $form . '_street_name', true );
 		if ( ! empty( $street ) ) {
-			echo '<p><strong>' . esc_attr__( 'Address', 'woocommerce' ) . ':</strong> ' . esc_attr( $street ) . '</p>';
+			echo '<p><strong>' . esc_attr__( 'Street name', 'radish-checkout-fields' ) . ':</strong> ' . esc_attr( $street ) . '</p>';
 		}
 
 		$house_number = get_post_meta( $order->get_id(), '_' . $form . '_house_number', true );
@@ -265,26 +281,11 @@ class Checkout_Fields {
 		$forms = [ 'billing', 'shipping' ];
 
 		foreach ( $forms as $form ) {
-			$checkout_fields[ $form ][ $form . '_country' ]['priority']      = 28;
-			$checkout_fields[ $form ][ $form . '_address_1' ]['placeholder'] = __( 'Street address', 'woocommerce' );
+			$checkout_fields[ $form ][ $form . '_country' ]['priority'] = 28;
+			unset( $checkout_fields[ $form ][ $form . '_address_1' ] );
 		}
 
 		return $checkout_fields;
-	}
-
-	/**
-	 * Change the placeholder of the street 1 and address to exclude number.
-	 *
-	 * @param array $fields An array of checkout fields.
-	 *
-	 * @since 1.0
-	 *
-	 * @return array An updated array of checkout fields
-	 */
-	public function checkout_change_address_1_placeholder( $fields ) {
-		$fields['address_1']['placeholder'] = __( 'Street' );
-
-		return $fields;
 	}
 
 	/**
@@ -305,6 +306,70 @@ class Checkout_Fields {
 		}
 
 		return $country_codes;
+	}
+
+	/**
+	 * Update Order Review
+	 *
+	 * Updates the fields in checkout so that house number and suffix are saved upon refresh.
+	 *
+	 * @param array $params An array of post data.
+	 */
+	public function update_order_review( $params ) {
+		parse_str( $params, $data );
+
+		WC()->session->set( 'billing_street_name', isset( $data['billing_street_name'] ) ? wp_unslash( $data['billing_street_name'] ) : null );
+		WC()->session->set( 'billing_house_number', isset( $data['billing_house_number'] ) ? wp_unslash( $data['billing_house_number'] ) : null );
+		WC()->session->set( 'billing_house_number_suffix', isset( $data['billing_house_number_suffix'] ) ? wp_unslash( $data['billing_house_number_suffix'] ) : null );
+
+		if ( wc_ship_to_billing_address_only() ) {
+			WC()->session->set( 'shipping_street_name', isset( $data['billing_street_name'] ) ? wp_unslash( $data['billing_street_name'] ) : null );
+			WC()->session->set( 'shipping_house_number', isset( $data['billing_house_number'] ) ? wp_unslash( $data['billing_house_number'] ) : null );
+			WC()->session->set( 'shipping_house_number_suffix', isset( $data['billing_house_number_suffix'] ) ? wp_unslash( $data['billing_house_number_suffix'] ) : null );
+		} else {
+			WC()->session->set( 'shipping_street_name', isset( $data['shipping_street_name'] ) ? wp_unslash( $data['shipping_street_name'] ) : null );
+			WC()->session->set( 'shipping_house_number', isset( $data['shipping_house_number'] ) ? wp_unslash( $data['shipping_house_number'] ) : null );
+			WC()->session->set( 'shipping_house_number_suffix', isset( $data['shipping_house_number_suffix'] ) ? wp_unslash( $data['shipping_house_number_suffix'] ) : null );
+		}
+
+	}
+
+	/**
+	 * Adds the separated fields as inputs in the admin, so fields can be managed there too.
+	 *
+	 * @param array $fields Array of existing fields.
+	 *
+	 * @return array Array of existing and new fields.
+	 */
+	public function admin_address_fields( $fields ) {
+		$street_name = array(
+			'street_name' => array(
+				'label' => __( 'Street name', 'radish-checkout-fields' ),
+				'show'  => false,
+			),
+		);
+
+		array_splice( $fields, 3, 0, $street_name );
+
+		$number = array(
+			'number' => array(
+				'label' => __( 'Nr.', 'radish-checkout-fields' ),
+				'show'  => false,
+			),
+		);
+
+		array_splice( $fields, 4, 0, $number );
+
+		$suffix = array(
+			'suffix' => array(
+				'label' => __( 'Suffix', 'radish-checkout-fields' ),
+				'show'  => false,
+			),
+		);
+
+		array_splice( $fields, 5, 0, $suffix );
+
+		return $fields;
 	}
 
 }
