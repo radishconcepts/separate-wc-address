@@ -42,7 +42,12 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Require all files with composer.
  */
-require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
+$autoload_file = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
+if ( is_readable( $autoload_file ) ) {
+	require $autoload_file;
+}
 
 new Radish_Checkout_Fields\Languages();
 new Radish_Checkout_Fields\Checkout_Fields();
