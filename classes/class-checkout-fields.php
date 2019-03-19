@@ -116,7 +116,8 @@ class Checkout_Fields {
 				'required'     => true,
 				'priority'     => 60,
 				'class'        => [ 'form-row-quart-first' ],
-				'autocomplete' => 'street_address',
+				'autocomplete' => 'street_name',
+				'placeholder'  => __( 'Street name', 'radish-checkout-fields' ),
 				'default'      => ( ! empty( WC()->session->get( $form . '_street_name' ) ) ? WC()->session->get( $form . '_street_name' ) : '' ),
 			];
 		}

@@ -13,14 +13,14 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: classes/class-checkout-fields.php:115, classes/class-checkout-fields.php:223, classes/class-checkout-fields.php:335
+#: classes/class-checkout-fields.php:115, classes/class-checkout-fields.php:120, classes/class-checkout-fields.php:224, classes/class-checkout-fields.php:336
 msgid "Street name"
 msgstr ""
 
-#: classes/class-checkout-fields.php:126, classes/class-checkout-fields.php:228, classes/class-checkout-fields.php:344
+#: classes/class-checkout-fields.php:127, classes/class-checkout-fields.php:229, classes/class-checkout-fields.php:345
 msgid "Nr."
 msgstr ""
 
-#: classes/class-checkout-fields.php:136, classes/class-checkout-fields.php:233, classes/class-checkout-fields.php:353
+#: classes/class-checkout-fields.php:137, classes/class-checkout-fields.php:234, classes/class-checkout-fields.php:354
 msgid "Suffix"
 msgstr ""
