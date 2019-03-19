@@ -106,9 +106,9 @@ class Checkout_Fields {
 	 * @return array An updated array with all fields
 	 */
 	public function alter_checkout_fields( $fields, $form ) {
-		$fields[ $form . '_address_1' ]['class'] = array_merge( $fields[ $form . '_address_1' ]['class'], [ 'form-row-third' ] );
+		$fields[ $form . '_address_1' ]['class']    = array_merge( $fields[ $form . '_address_1' ]['class'], [ 'form-row-third' ] );
 		$fields[ $form . '_address_1' ]['required'] = false;
-		$fields[ $form . '_address_1' ]['default'] = 'street_name';
+		$fields[ $form . '_address_1' ]['default']  = 'street_name';
 
 		$extra_fields = [];
 
