@@ -39,6 +39,9 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+define( 'RD_WC_ADDR_VERSION', '1.0' );
+define( 'RD_WC_ADDR_URL', plugin_dir_url( __FILE__ ) );
+
 /**
  * Require all files with composer.
  */
@@ -51,3 +54,4 @@ if ( is_readable( $autoload_file ) ) {
 
 new Radish_Checkout_Fields\Languages();
 new Radish_Checkout_Fields\Checkout_Fields();
+new Radish_Checkout_Fields\Front_End();

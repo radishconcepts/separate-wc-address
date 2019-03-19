@@ -1,0 +1,7 @@
+.woocommerce-billing-fields #billing_address_1_field {
+  display: none !important; }
+
+.woocommerce-shipping-fields #shipping_address_1_field {
+  display: none !important; }
+
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImNvbXBvbmVudHMvX2hpZGUtYWRkcmVzcy1maWVsZC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0Usd0JBQXdCLEVBQUE7O0FBRTFCO0VBQ0Usd0JBQXdCLEVBQUEiLCJmaWxlIjoibWFpbi5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIud29vY29tbWVyY2UtYmlsbGluZy1maWVsZHMgI2JpbGxpbmdfYWRkcmVzc18xX2ZpZWxkIHtcbiAgZGlzcGxheTogbm9uZSAhaW1wb3J0YW50O1xufVxuLndvb2NvbW1lcmNlLXNoaXBwaW5nLWZpZWxkcyAjc2hpcHBpbmdfYWRkcmVzc18xX2ZpZWxkIHtcbiAgZGlzcGxheTogbm9uZSAhaW1wb3J0YW50O1xufSJdfQ== */

@@ -188,6 +188,7 @@ class Checkout_Fields {
 		// Loop over again, now with new data.
 		foreach ( $address_data as $form => $data ) {
 
+			// If it's the shipping form, while the customer did not select a different shipping address: Use the billing address.
 			if ( $form === 'shipping' && ! isset( $_POST['ship_to_different_address'] ) ) { // phpcs:ignore
 				$street_name         = $address_data['billing']['street_name'];
 				$house_number        = $address_data['billing']['house_number'];
@@ -271,7 +272,6 @@ class Checkout_Fields {
 
 		foreach ( $forms as $form ) {
 			$checkout_fields[ $form ][ $form . '_country' ]['priority'] = 28;
-			unset( $checkout_fields[ $form ][ $form . '_address_1' ] );
 		}
 
 		return $checkout_fields;
