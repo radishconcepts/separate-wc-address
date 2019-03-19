@@ -17,6 +17,8 @@
     "@babel/core": "^7.3.4",
     "gulp": "^4.0.0",
     "gulp-babel": "^8.0.0",
-    "gulp-fs": "0.0.2"
+    "gulp-checktextdomain": "^2.2.0",
+    "gulp-fs": "0.0.2",
+    "gulp-wp-pot": "^2.3.4"
   }
 }
